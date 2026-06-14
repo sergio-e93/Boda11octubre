@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laura & Sergio — Invitación de Boda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #F9F6EF;
+    --gold: #B8965A;
+    --gold-light: #D4AF7A;
+    --dark: #1A1612;
+    --text: #3A3228;
+    --cream: #EDE8DC;
+    --blush: #E8D9CC;
+    --sage: #8A9E88;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ivory);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── FLORAL BACKGROUND LAYER ── */
+  .floral-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .floral-bg img {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.06;
+    animation: floatPetal 20s ease-in-out infinite;
+  }
+  .floral-bg img:nth-child(1)  { top: 5%;  left: 2%;   width: 180px; animation-delay: 0s;   animation-duration: 22s; }
+  .floral-bg img:nth-child(2)  { top: 15%; right: 3%;  width: 140px; animation-delay: 3s;   animation-duration: 18s; }
+  .floral-bg img:nth-child(3)  { top: 40%; left: -2%;  width: 200px; animation-delay: 6s;   animation-duration: 25s; }
+  .floral-bg img:nth-child(4)  { top: 60%; right: 1%;  width: 160px; animation-delay: 9s;   animation-duration: 20s; }
+  .floral-bg img:nth-child(5)  { top: 80%; left: 5%;   width: 120px; animation-delay: 12s;  animation-duration: 17s; }
+  .floral-bg img:nth-child(6)  { top: 90%; right: 8%;  width: 150px; animation-delay: 5s;   animation-duration: 23s; }
+
+  @keyframes floatPetal {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33%       { transform: translateY(-18px) rotate(4deg); }
+    66%       { transform: translateY(10px) rotate(-3deg); }
+  }
+
+  /* ── REVEAL ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('imagenes/fondo.jpg');
+    background-size: cover;
+    background-position: center top;
+    filter: brightness(0.55) saturate(0.8);
+    transform: scale(1.05);
+    animation: kenBurns 20s ease-in-out infinite alternate;
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1.05) translate(0, 0); }
+    to   { transform: scale(1.12) translate(-1%, 1%); }
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,8,5,0.25) 0%,
+      rgba(10,8,5,0.15) 40%,
+      rgba(10,8,5,0.6) 100%
+    );
+  }
+  .hero-content {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    padding: 2rem;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.5rem, 3vw, 3.5rem);
+    letter-spacing: 0.45em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.6);
+    animation: fadeDown 1.2s ease both;
+  }
+  .hero-names {
+    font-family: 'Cinzel', serif;
+    font-weight: 300;
+    font-size: clamp(3rem, 11vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    animation: fadeDown 1.2s ease 0.3s both;
+  }
+  .hero-names .amp {
+    font-style: normal;
+    font-weight: 300;
+    color: var(--gold-light);
+    font-size: 0.55em;
+    display: block;
+    line-height: 1.4;
+    letter-spacing: 0.4em;
+    text-shadow: 0 1px 16px rgba(0,0,0,0.5);
+  }
+  .hero-date {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.2rem, 2.4vw, 3rem);
+    letter-spacing: 0.3em;
+    margin-top: 2.5rem;
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.7);
+    animation: fadeDown 1.2s ease 0.6s both;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    animation: bounce 2s ease infinite;
+    cursor: pointer;
+  }
+  .hero-scroll span {
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--gold-light));
+    margin: 0 auto;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── ORNAMENT DIVIDERS ── */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    justify-content: center;
+    margin: 2.5rem auto;
+  }
+  .ornament::before,
+  .ornament::after {
+    content: '';
+    flex: 1;
+    max-width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .ornament::after {
+    background: linear-gradient(to left, transparent, var(--gold));
+  }
+  .ornament-icon {
+    width: 36px;
+    opacity: 0.75;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 1.5rem;
+  }
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 0.8rem;
+  }
+  h2 {
+    font-family: 'Cinzel', serif;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    text-align: center;
+    color: var(--dark);
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+  }
+  h2 em {
+    font-style: normal;
+    font-weight: 300;
+    color: var(--gold);
+  }
+  p.body-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    line-height: 1.8;
+    text-align: center;
+    color: var(--text);
+    margin: 0 auto;
+    max-width: 600px;
+  }
+
+  /* ── INTRODUCTION ── */
+  .intro {
+    background: var(--ivory);
+  }
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .intro-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .intro-icon img {
+    width: 90px;
+    opacity: 0.85;
+  }
+
+  /* ── COUNTDOWN ── */
+  .countdown-section {
+    background: var(--dark);
+    color: #fff;
+  }
+  .countdown-section h2 { color: #fff; }
+  .countdown-section .section-label { color: var(--gold-light); }
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 4vw, 3rem);
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+  .countdown-unit {
+    text-align: center;
+    min-width: 80px;
+  }
+  .countdown-num {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--gold-light);
+    display: block;
+  }
+  .countdown-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.4rem;
+  }
+  .countdown-sep {
+    font-family: 'Cinzel', serif;
+    font-size: 3.5rem;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+    align-self: flex-start;
+    padding-top: 0.1em;
+  }
+
+  /* ── DETAILS ── */
+  .details-section {
+    background: var(--cream);
+  }
+  .details-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .detail-card {
+    background: var(--ivory);
+    border: 1px solid rgba(184,150,90,0.2);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .detail-card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .detail-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .detail-card p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  /* ── PHOTOS ── */
+  .photos-section {
+    background: var(--ivory);
+  }
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 3rem;
+  }
+  .photo-cell {
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    position: relative;
+  }
+  .photo-cell:first-child {
+    grid-column: 1 / -1;
+    aspect-ratio: 16/9;
+  }
+  .photo-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+    display: block;
+  }
+  .photo-cell:hover img {
+    transform: scale(1.04);
+  }
+  .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: rgba(58,50,40,0.35);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── RSVP ── */
+  .rsvp-section {
+    background: linear-gradient(135deg, #1A1612 0%, #2C2318 100%);
+    color: #fff;
+  }
+  .rsvp-section h2 { color: #fff; }
+  .rsvp-section .section-label { color: var(--gold-light); }
+  .rsvp-section p.body-text { color: rgba(255,255,255,0.7); }
+
+  .rsvp-form {
+    max-width: 520px;
+    margin: 3rem auto 0;
+  }
+  .form-row {
+    margin-bottom: 1.5rem;
+  }
+  .form-row label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(184,150,90,0.3);
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    -webkit-appearance: none;
+  }
+  .form-row select option { background: #1A1612; color: #fff; }
+  .form-row input::placeholder,
+  .form-row textarea::placeholder { color: rgba(255,255,255,0.3); }
+  .form-row input:focus,
+  .form-row select:focus,
+  .form-row textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-row textarea { resize: vertical; min-height: 90px; }
+  .radio-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .radio-group label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  .radio-group input[type=radio] {
+    width: auto;
+    accent-color: var(--gold);
+  }
+
+  .btn-rsvp {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    margin-top: 0.5rem;
+  }
+  .btn-rsvp:hover {
+    background: var(--gold);
+    color: var(--dark);
+  }
+  .rsvp-confirm {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+  .rsvp-confirm .big-check {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  .rsvp-confirm p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+
+  /* ── DETAIL CARD LINK ── */
+  a.detail-card {
+    color: var(--text);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  a.detail-card:hover {
+    box-shadow: 0 4px 24px rgba(184,150,90,0.18);
+    transform: translateY(-3px);
+  }
+  a.detail-card h3 { color: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    background: var(--ivory);
+    text-align: center;
+    padding: 4rem 1.5rem 3rem;
+    border-top: 1px solid rgba(184,150,90,0.2);
+  }
+  .footer-logo {
+    max-width: 340px;
+    width: 80%;
+    opacity: 0.75;
+    margin: 0 auto 1.5rem;
+    display: block;
+    filter: grayscale(30%);
+  }
+  .footer-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: rgba(58,50,40,0.5);
+    letter-spacing: 0.25em;
+  }
+  .footer-tagline {
+    font-family: 'Cinzel', serif;
+    font-weight: 400;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-top: 0.5rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .intro-grid { grid-template-columns: 1fr; }
+    .intro-icon { display: none; }
+    .photo-grid { grid-template-columns: 1fr 1fr; }
+    .photo-cell:first-child { grid-column: 1 / -1; }
+    .countdown-sep { display: none; }
+  }
+
+
+  /* ══ ENHANCED MOBILE & TABLET STYLES ══ */
+
+  /* Touch-friendly tap targets */
+  .btn-rsvp { min-height: 52px; }
+  .radio-group label { min-height: 44px; display: flex; align-items: center; }
+
+  /* Hero mobile */
+  @media (max-width: 768px) {
+    .hero-names { font-size: clamp(3rem, 18vw, 5rem); }
+    .hero-eyebrow { font-size: 0.72rem; letter-spacing: 0.25em; }
+    .hero-date { font-size: 0.78rem; letter-spacing: 0.15em; }
+    .hero-scroll { bottom: 1.5rem; }
+  }
+
+  /* Intro section mobile */
+  @media (max-width: 640px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .intro-icon { display: none; }
+    p.body-text { text-align: center !important; font-size: 1.05rem; }
+    section { padding: 3.5rem 1.2rem; }
+  }
+
+  /* Countdown mobile */
+  @media (max-width: 520px) {
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem 0.5rem;
+      justify-items: center;
+    }
+    .countdown-sep { display: none; }
+    .countdown-num { font-size: clamp(2.8rem, 15vw, 4rem); }
+    .countdown-label { font-size: 0.55rem; }
+  }
+
+  /* Details cards tablet */
+  @media (min-width: 480px) and (max-width: 860px) {
+    .details-cards {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+  }
+  @media (max-width: 479px) {
+    .details-cards { grid-template-columns: 1fr; gap: 1rem; }
+    .detail-card { padding: 2rem 1.5rem; }
+  }
+
+  /* Photo grid mobile */
+  @media (max-width: 640px) {
+    .photo-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .photo-cell:first-child {
+      grid-column: 1 / -1;
+      aspect-ratio: 4/3;
+    }
+  }
+  @media (max-width: 380px) {
+    .photo-grid { grid-template-columns: 1fr; }
+    .photo-cell:first-child { grid-column: auto; }
+  }
+
+  /* RSVP form mobile */
+  @media (max-width: 600px) {
+    .rsvp-form { margin-top: 2rem; }
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+      font-size: 1rem;
+      padding: 0.9rem 0.85rem;
+    }
+    .radio-group { flex-direction: column; gap: 0.6rem; }
+    .btn-rsvp { font-size: 0.72rem; padding: 1.2rem; }
+  }
+
+  /* Footer mobile */
+  @media (max-width: 480px) {
+    .footer-logo { max-width: 260px; }
+    .footer-text { font-size: 0.85rem; }
+    .footer-tagline { font-size: 1rem; }
+    footer { padding: 3rem 1.2rem 2.5rem; }
+  }
+
+  /* Ornament on small screens */
+  @media (max-width: 480px) {
+    .ornament::before, .ornament::after { max-width: 60px; }
+    .ornament-icon { width: 28px; }
+  }
+
+  /* Card headings & text tablet */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .container { max-width: 90%; }
+    h2 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); }
+  }
+
+  /* Prevent horizontal scroll on all devices */
+  body { max-width: 100vw; }
+  img { max-width: 100%; }
+
+  /* Smooth scrolling on iOS */
+  html { -webkit-overflow-scrolling: touch; }
+
+  /* Better tap highlight */
+  a, button, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(184,150,90,0.2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- FLORAL AMBIENT BACKGROUND -->
+<div class="floral-bg" aria-hidden="true">
+  <img src="imagenes/granada.png" alt="">
+  <img src="imagenes/granada.png" alt="">
+  <img src="imagenes/granada.png" alt="">
+  <img src="imagenes/caballo.png" alt="">
+  <img src="imagenes/granada.png" alt="">
+  <img src="imagenes/granada.png" alt="">
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Nos casamos</p>
+    <h1 class="hero-names">
+      Laura
+      <span class="amp">&</span>
+      Sergio
+    </h1>
+    <p class="hero-date">Domingo · 11 de Octubre de 2026 · Granada</p>
+  </div>
+  <div class="hero-scroll" onclick="document.querySelector('.intro').scrollIntoView({behavior:'smooth'})">
+    <span></span>
+  </div>
+</section>
+
+<!-- ══ INTRO ══ -->
+<section class="intro" id="inicio">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Con todo nuestro amor</p>
+      <h2>Queremos que <em>compartas</em><br>este día con nosotros</h2>
+    </div>
+
+    <div class="intro-grid">
+      <div class="reveal-left">
+        <p class="body-text" style="text-align:right;">
+          Después de un largo camino juntos, llega el momento más especial de nuestras vidas. 
+        </p>
+      </div>
+      <div class="intro-icon reveal">
+        <img src="imagenes/granada.png" alt="Granada ornamento">
+      </div>
+      <div class="reveal-right">
+        <p class="body-text" style="text-align:left;">
+          Os pedimos que nos acompañéis a celebrar nuestra unión rodeados de las personas que más queremos.
+        </p>
+      </div>
+    </div>
+
+    <div class="ornament reveal">
+      <img class="ornament-icon" src="imagenes/caballo.png" alt="">
+    </div>
+  </div>
+</section>
+
+<!-- ══ COUNTDOWN ══ -->
+<section class="countdown-section" id="cuenta-atras">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Faltan</p>
+    </div>
+    <div class="countdown-grid reveal" id="countdown">
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-days">000</span>
+        <span class="countdown-label">Días</span>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-hours">00</span>
+        <span class="countdown-label">Horas</span>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-minutes">00</span>
+        <span class="countdown-label">Minutos</span>
+      </div>
+      <div class="countdown-sep">·</div>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-seconds">00</span>
+        <span class="countdown-label">Segundos</span>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:3rem;">
+      <h2>El gran día<br><em>se acerca</em></h2>
+    </div>
+    <div class="reveal" style="margin-top:2.5rem; text-align:center;">
+      <img src="imagenes/calendario.png" alt="Calendario octubre 2026" style="max-width:520px; width:90%; mix-blend-mode:multiply;">
+      <p style="font-family:'Cormorant Garamond',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); color:var(--gold-light); margin-top:1.5rem; font-style:italic; line-height:1.7;">
+        No olvidéis que el 12 de octubre es festivo ya que es el día de la Hispanidad
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DETALLES ══ -->
+<section class="details-section" id="detalles">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Información</p>
+      <h2>Los <em>detalles</em><br>del gran día</h2>
+    </div>
+    <div class="details-cards">
+      <div class="detail-card reveal" style="transition-delay:0.1s">
+        <span class="detail-card-icon">⛪</span>
+        <h3>Ceremonia</h3>
+        <p>Real Sociedad Hípica<br>Granada, <br>a las 13:30 horas</p>
+      </div>
+      <div class="detail-card reveal" style="transition-delay:0.2s">
+        <span class="detail-card-icon">🥂</span>
+        <h3>Celebración</h3>
+        <p>Continuaremos en las mismas instalaciones tras la ceremonia</p>
+      </div>
+      <div class="detail-card reveal" style="transition-delay:0.3s">
+        <span class="detail-card-icon">👗</span>
+        <h3>Código de vestimenta</h3>
+        <p>Etiqueta<br>Evitar el color blanco y similares</p>
+      </div>
+    </div>
+    <div class="details-cards" style="margin-top:2rem; grid-template-columns:1fr; max-width:320px; margin-left:auto; margin-right:auto;">
+      <a href="https://maps.app.goo.gl/8wA9pLwu38RT4sLt8" target="_blank" rel="noopener" class="detail-card reveal" style="transition-delay:0.4s; text-decoration:none; display:block; cursor:pointer;">
+        <span class="detail-card-icon">📍</span>
+        <h3>Cómo llegar</h3>
+        <img src="imagenes/qr.png" alt="QR ubicación Hípica" style="width:140px; height:140px; margin:1rem auto 0.5rem; display:block; border:1px solid rgba(184,150,90,0.2); padding:6px;">
+        <p style="margin-top:0.5rem;">Escanea el QR o pulsa para abrir en Google Maps</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOTOS ══ -->
+<section class="photos-section" id="fotos">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Nuestra historia</p>
+      <h2>Momentos que nos<br><em>trajeron hasta aquí</em></h2>
+    </div>
+
+    <div class="photo-grid reveal">
+      <div class="photo-cell">
+        <img src="imagenes/fondo.jpg" alt="Laura y Sergio">
+      </div>
+      <div class="photo-cell">
+        <div class="photo-placeholder">Próximamente</div>
+      </div>
+      <div class="photo-cell">
+        <div class="photo-placeholder">Próximamente</div>
+      </div>
+      <div class="photo-cell">
+        <div class="photo-placeholder">Próximamente</div>
+      </div>
+    </div>
+
+    <div class="ornament reveal">
+      <img class="ornament-icon" src="imagenes/granada.png" alt="">
+    </div>
+  </div>
+</section>
+
+<!-- ══ RSVP ══ -->
+<section class="rsvp-section" id="rsvp">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Confirmación de asistencia</p>
+      <h2>¿Vendrás a<br><em>celebrar con nosotros?</em></h2>
+      <p class="body-text" style="margin-top:1rem;">
+        Por favor confirmad cuanto antes
+      </p>
+    </div>
+
+    <div class="rsvp-form reveal" id="rsvp-form-wrap">
+      <div class="form-row">
+        <label>Nombre completo</label>
+        <input type="text" id="rsvp-name" placeholder="Tu nombre y apellidos">
+      </div>
+      <div class="form-row">
+        <label>¿Asistirás?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="attend" value="si" checked> 🥂 ¡Allí estaré!</label>
+          <label><input type="radio" name="attend" value="no"> 💌 No podré asistir</label>
+        </div>
+      </div>
+      <div class="form-row" id="guests-row">
+        <label>Número de acompañantes</label>
+        <select id="rsvp-guests">
+          <option value="0">Solo yo</option>
+          <option value="1">+1 acompañante</option>
+          <option value="2">+2 acompañantes</option>
+          <option value="3">+3 acompañantes</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Alergias o dietas especiales</label>
+        <input type="text" id="rsvp-diet" placeholder="Ninguna / indica aquí tu restricción">
+      </div>
+      <div class="form-row">
+        <label>Mensaje para los novios</label>
+        <textarea id="rsvp-msg" placeholder="¡Escríbenos unas palabras de cariño!"></textarea>
+      </div>
+      <button class="btn-rsvp" onclick="submitRsvp()">Confirmar asistencia</button>
+    </div>
+
+    <div class="rsvp-confirm" id="rsvp-confirm">
+      <div class="big-check">🥂</div>
+      <p id="rsvp-confirm-text">¡Gracias! Hemos recibido tu confirmación.<br>Estamos deseando compartir ese día contigo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <img 
+    class="footer-logo reveal" 
+    src="imagenes/hipica.png" 
+    alt="Real Sociedad Hípica de Granada"
+  >
+  <p class="footer-text reveal">Real Sociedad Hípica de Granada</p>
+  <p class="footer-tagline reveal">Laura & Sergio · 11 · 10 · 2026</p>
+</footer>
+
+<script>
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const target = new Date('2026-10-11T13:30:00+02:00'); // Hora de España (CEST)
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) {
+    document.getElementById('countdown').innerHTML = '<p style="font-family:Cormorant Garamond,serif;font-size:2rem;color:var(--gold-light);">¡Hoy es el gran día! 🥂</p>';
+    return;
+  }
+  const days    = Math.floor(diff / 86400000);
+  const hours   = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent    = String(days).padStart(3,'0');
+  document.getElementById('cd-hours').textContent   = String(hours).padStart(2,'0');
+  document.getElementById('cd-minutes').textContent = String(minutes).padStart(2,'0');
+  document.getElementById('cd-seconds').textContent = String(seconds).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── RSVP ──
+document.querySelectorAll('input[name=attend]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('guests-row').style.display =
+      r.value === 'si' ? 'block' : 'none';
+  });
+});
+
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwTytxN9lWCMEkYJ4owUi1TmMsmRlgxVKA3aH_4jbPhaatVeM-DBuSTJTeThJEbF_Rv/exec';
+
+async function submitRsvp() {
+  const name    = document.getElementById('rsvp-name').value.trim();
+  if (!name) { alert('Por favor, introduce tu nombre.'); return; }
+
+  const attend    = document.querySelector('input[name=attend]:checked').value;
+  const guests    = attend === 'si' ? document.getElementById('rsvp-guests').value : '0';
+  const diet      = document.getElementById('rsvp-diet').value.trim();
+  const msg       = document.getElementById('rsvp-msg').value.trim();
+
+  // Mostrar estado de envío
+  const btn = document.querySelector('.btn-rsvp');
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre:       name,
+        asistencia:   attend === 'si' ? 'Sí asiste' : 'No asiste',
+        acompanantes: guests,
+        alergias:     diet || 'Ninguna',
+        mensaje:      msg  || ''
+      })
+    });
+  } catch(e) {
+    console.warn('Error al enviar a Google Sheets:', e);
+  }
+
+  // Mostrar confirmación siempre (no-cors no devuelve respuesta legible)
+  document.getElementById('rsvp-form-wrap').style.display = 'none';
+  const confirm = document.getElementById('rsvp-confirm');
+  confirm.style.display = 'block';
+
+  if (attend === 'si') {
+    document.getElementById('rsvp-confirm-text').innerHTML =
+      `¡Gracias, <strong style="color:var(--gold-light)">${name}</strong>!<br>Hemos anotado tu asistencia y no podemos esperar a verte.`;
+  } else {
+    document.getElementById('rsvp-confirm-text').innerHTML =
+      `Lo sentimos mucho, <strong style="color:var(--gold-light)">${name}</strong>.<br>Te echaremos de menos, pero gracias por avisarnos.`;
+  }
+}
+</script>
+</body>
+</html>
