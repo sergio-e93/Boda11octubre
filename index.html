@@ -386,10 +386,7 @@
     aspect-ratio: 3/4;
     position: relative;
   }
-  .photo-cell:first-child {
-    grid-column: 1 / -1;
-    aspect-ratio: 16/9;
-  }
+  /* todas las celdas con el mismo aspect-ratio */
   .photo-cell img {
     width: 100%;
     height: 100%;
@@ -566,7 +563,6 @@
     .intro-grid { grid-template-columns: 1fr; }
     .intro-icon { display: flex; }
     .photo-grid { grid-template-columns: 1fr 1fr; }
-    .photo-cell:first-child { grid-column: 1 / -1; }
     .countdown-sep { display: none; }
   }
 
@@ -625,17 +621,9 @@
   /* Photo grid mobile */
   @media (max-width: 640px) {
     .photo-grid {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 8px;
     }
-    .photo-cell:first-child {
-      grid-column: 1 / -1;
-      aspect-ratio: 4/3;
-    }
-  }
-  @media (max-width: 380px) {
-    .photo-grid { grid-template-columns: 1fr; }
-    .photo-cell:first-child { grid-column: auto; }
   }
 
   /* RSVP form mobile */
@@ -848,13 +836,10 @@
         <img src="imagenes/fondo.jpg" alt="Laura y Sergio">
       </div>
       <div class="photo-cell">
-        <div class="photo-placeholder">Próximamente</div>
+        <img src="imagenes/almendro.jpeg" alt="Laura y Sergio junto al almendro">
       </div>
       <div class="photo-cell">
-        <div class="photo-placeholder">Próximamente</div>
-      </div>
-      <div class="photo-cell">
-        <div class="photo-placeholder">Próximamente</div>
+        <img src="imagenes/mano.jpeg" alt="El anillo de compromiso">
       </div>
     </div>
 
