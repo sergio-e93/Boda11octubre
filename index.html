@@ -435,7 +435,7 @@
     color: var(--gold-light);
     margin-bottom: 0.5rem;
   }
-  .form-row input,
+  .form-row input:not([type=radio]),
   .form-row select,
   .form-row textarea {
     width: 100%;
@@ -452,7 +452,7 @@
   .form-row select option { background: #1A1612; color: #fff; }
   .form-row input::placeholder,
   .form-row textarea::placeholder { color: rgba(255,255,255,0.3); }
-  .form-row input:focus,
+  .form-row input:not([type=radio]):focus,
   .form-row select:focus,
   .form-row textarea:focus {
     border-color: var(--gold);
@@ -475,8 +475,13 @@
     cursor: pointer;
   }
   .radio-group input[type=radio] {
-    width: auto;
+    width: 18px;
+    height: 18px;
     accent-color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+    appearance: auto;
+    -webkit-appearance: auto;
   }
 
   .btn-rsvp {
@@ -629,7 +634,7 @@
   /* RSVP form mobile */
   @media (max-width: 600px) {
     .rsvp-form { margin-top: 2rem; }
-    .form-row input,
+    .form-row input:not([type=radio]),
     .form-row select,
     .form-row textarea {
       font-size: 1rem;
@@ -869,21 +874,27 @@
         <label>¿Asistirás?</label>
         <div class="radio-group">
           <label><input type="radio" name="attend" value="si" checked> 🥂 ¡Allí estaré!</label>
-          <label><input type="radio" name="attend" value="no"> 💌 No podré asistir</label>
+          <label><input type="radio" name="attend" value="no"> 😢 No podré asistir</label>
         </div>
       </div>
       <div class="form-row" id="guests-row">
-        <label>Número de acompañantes</label>
+        <label>Número de asistentes</label>
         <select id="rsvp-guests">
-          <option value="0">Solo yo</option>
-          <option value="1">+1 acompañante</option>
-          <option value="2">+2 acompañantes</option>
-          <option value="3">+3 acompañantes</option>
+          <option value="1">1 asistente</option>
+          <option value="2">2 asistentes</option>
+          <option value="3">3 asistentes</option>
+          <option value="4">4 asistentes</option>
+          <option value="5">5 asistentes</option>
+          <option value="6">6 asistentes</option>
         </select>
       </div>
-      <div class="form-row">
+      <div class="form-row" id="diet-row">
         <label>Alergias o dietas especiales</label>
         <input type="text" id="rsvp-diet" placeholder="Ninguna / indica aquí tu restricción">
+      </div>
+      <div class="form-row" id="noname-row" style="display:none;">
+        <label>Nombre completo</label>
+        <input type="text" id="rsvp-noname" placeholder="Tu nombre y apellidos">
       </div>
       <div class="form-row">
         <label>Mensaje para los novios</label>
@@ -946,20 +957,24 @@ setInterval(updateCountdown, 1000);
 // ── RSVP ──
 document.querySelectorAll('input[name=attend]').forEach(r => {
   r.addEventListener('change', () => {
-    document.getElementById('guests-row').style.display =
-      r.value === 'si' ? 'block' : 'none';
+    const isYes = r.value === 'si';
+    document.getElementById('guests-row').style.display = isYes ? 'block' : 'none';
+    document.getElementById('diet-row').style.display   = isYes ? 'block' : 'none';
+    document.getElementById('noname-row').style.display = isYes ? 'none'  : 'block';
   });
 });
 
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwTytxN9lWCMEkYJ4owUi1TmMsmRlgxVKA3aH_4jbPhaatVeM-DBuSTJTeThJEbF_Rv/exec';
 
 async function submitRsvp() {
-  const name    = document.getElementById('rsvp-name').value.trim();
-  if (!name) { alert('Por favor, introduce tu nombre.'); return; }
-
   const attend    = document.querySelector('input[name=attend]:checked').value;
-  const guests    = attend === 'si' ? document.getElementById('rsvp-guests').value : '0';
-  const diet      = document.getElementById('rsvp-diet').value.trim();
+  const isYes     = attend === 'si';
+  const name      = isYes
+    ? document.getElementById('rsvp-name').value.trim()
+    : document.getElementById('rsvp-noname').value.trim();
+  if (!name) { alert('Por favor, introduce tu nombre.'); return; }
+  const guests    = isYes ? document.getElementById('rsvp-guests').value : '0';
+  const diet      = isYes ? document.getElementById('rsvp-diet').value.trim() : '';
   const msg       = document.getElementById('rsvp-msg').value.trim();
 
   // Mostrar estado de envío
