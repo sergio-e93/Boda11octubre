@@ -564,7 +564,7 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
     .intro-grid { grid-template-columns: 1fr; }
-    .intro-icon { display: none; }
+    .intro-icon { display: flex; }
     .photo-grid { grid-template-columns: 1fr 1fr; }
     .photo-cell:first-child { grid-column: 1 / -1; }
     .countdown-sep { display: none; }
@@ -591,7 +591,7 @@
       grid-template-columns: 1fr;
       gap: 1.5rem;
     }
-    .intro-icon { display: none; }
+    .intro-icon { display: flex; }
     p.body-text { text-align: center !important; font-size: 1.05rem; }
     section { padding: 3.5rem 1.2rem; }
   }
