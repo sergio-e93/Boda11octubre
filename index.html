@@ -599,14 +599,15 @@
   /* Countdown mobile */
   @media (max-width: 520px) {
     .countdown-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem 0.5rem;
-      justify-items: center;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 0.3rem;
     }
     .countdown-sep { display: none; }
-    .countdown-num { font-size: clamp(2.8rem, 15vw, 4rem); }
-    .countdown-label { font-size: 0.55rem; }
+    .countdown-unit { min-width: 0; flex: 1; }
+    .countdown-num { font-size: clamp(1.6rem, 7vw, 2.8rem); }
+    .countdown-label { font-size: 0.42rem; letter-spacing: 0.15em; }
   }
 
   /* Details cards tablet */
@@ -661,7 +662,7 @@
   /* Ornament on small screens */
   @media (max-width: 480px) {
     .ornament::before, .ornament::after { max-width: 60px; }
-    .ornament-icon { width: 28px; }
+    .ornament-icon { width: 52px; }
   }
 
   /* Card headings & text tablet */
@@ -687,6 +688,16 @@
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  /* Floral bg granada – tamaño reducido en móvil */
+  @media (max-width: 520px) {
+    .floral-bg img:nth-child(1)  { width: 100px; }
+    .floral-bg img:nth-child(2)  { width: 80px;  }
+    .floral-bg img:nth-child(3)  { width: 110px; }
+    .floral-bg img:nth-child(4)  { width: 90px;  }
+    .floral-bg img:nth-child(5)  { width: 70px;  }
+    .floral-bg img:nth-child(6)  { width: 85px;  }
   }
 </style>
 </head>
@@ -995,7 +1006,7 @@ async function submitRsvp() {
 
   if (attend === 'si') {
     document.getElementById('rsvp-confirm-text').innerHTML =
-      `¡Gracias, <strong style="color:var(--gold-light)">${name}</strong>!<br>Hemos anotado tu asistencia y no podemos esperar a verte.`;
+      `¡Gracias, <strong style="color:var(--gold-light)"></strong>!<br>Hemos anotado tu asistencia y no podemos esperar a veros.`;
   } else {
     document.getElementById('rsvp-confirm-text').innerHTML =
       `Lo sentimos mucho, <strong style="color:var(--gold-light)">${name}</strong>.<br>Te echaremos de menos, pero gracias por avisarnos.`;
