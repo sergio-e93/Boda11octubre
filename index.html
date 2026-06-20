@@ -869,7 +869,7 @@
     </div>
 
     <div class="rsvp-form reveal" id="rsvp-form-wrap">
-      <div class="form-row">
+      <div class="form-row" id="name-row">
         <label>Nombre completo</label>
         <input type="text" id="rsvp-name" placeholder="Tu nombre y apellidos">
       </div>
@@ -961,9 +961,10 @@ setInterval(updateCountdown, 1000);
 document.querySelectorAll('input[name=attend]').forEach(r => {
   r.addEventListener('change', () => {
     const isYes = r.value === 'si';
-    document.getElementById('guests-row').style.display = isYes ? 'block' : 'none';
-    document.getElementById('diet-row').style.display   = isYes ? 'block' : 'none';
-    document.getElementById('noname-row').style.display = isYes ? 'none'  : 'block';
+    document.getElementById('name-row').style.display    = isYes ? 'block' : 'none';
+    document.getElementById('guests-row').style.display  = isYes ? 'block' : 'none';
+    document.getElementById('diet-row').style.display    = isYes ? 'block' : 'none';
+    document.getElementById('noname-row').style.display  = 'none';
   });
 });
 
@@ -972,10 +973,8 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwTytxN9lWCMEkYJ4owUi
 async function submitRsvp() {
   const attend    = document.querySelector('input[name=attend]:checked').value;
   const isYes     = attend === 'si';
-  const name      = isYes
-    ? document.getElementById('rsvp-name').value.trim()
-    : document.getElementById('rsvp-noname').value.trim();
-  if (!name) { alert('Por favor, introduce tu nombre.'); return; }
+  const name      = isYes ? document.getElementById('rsvp-name').value.trim() : '';
+  if (isYes && !name) { alert('Por favor, introduce tu nombre.'); return; }
   const guests    = isYes ? document.getElementById('rsvp-guests').value : '0';
   const diet      = isYes ? document.getElementById('rsvp-diet').value.trim() : '';
   const msg       = document.getElementById('rsvp-msg').value.trim();
