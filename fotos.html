@@ -206,6 +206,23 @@
 
   /* ── GALLERY ── */
   .gallery-section { background: var(--ivory); }
+
+  .photo-counter { text-align: center; margin-top: 2rem; }
+  .photo-counter-num {
+    font-family: 'Cinzel', serif; font-weight: 300; font-size: clamp(2.6rem, 7vw, 4rem);
+    color: var(--gold); line-height: 1; display: inline-block;
+    transition: transform 0.3s ease;
+  }
+  .photo-counter-num.bump { transform: scale(1.15); }
+  .photo-counter-label {
+    font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(58,50,40,0.55); margin-top: 0.4rem;
+  }
+  .photo-counter-hint {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem;
+    color: rgba(58,50,40,0.5); margin-top: 0.6rem;
+  }
+
   .gallery-header {
     display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap;
   }
@@ -333,6 +350,12 @@
     <div class="reveal">
       <p class="section-label">Nuestros invitados</p>
       <h2>La boda vista<br>a <em>través de vosotros</em></h2>
+    </div>
+
+    <div class="photo-counter reveal">
+      <span class="photo-counter-num" id="photo-count">0</span>
+      <p class="photo-counter-label">Fotos compartidas</p>
+      <p class="photo-counter-hint" id="photo-count-hint">¡Sé el primero en subir una!</p>
     </div>
 
     <div class="gallery-header reveal">
@@ -488,6 +511,26 @@ async function uploadPhotos() {
 }
 
 // ── GALERÍA ──
+let lastPhotoCount = 0;
+
+function updatePhotoCounter(count) {
+  const numEl = document.getElementById('photo-count');
+  const hintEl = document.getElementById('photo-count-hint');
+  numEl.textContent = count;
+
+  if (count > lastPhotoCount) {
+    numEl.classList.add('bump');
+    setTimeout(() => numEl.classList.remove('bump'), 300);
+  }
+  lastPhotoCount = count;
+
+  if (count === 0) hintEl.textContent = '¡Sé el primero en subir una!';
+  else if (count < 10) hintEl.textContent = '¡Buen comienzo! Seguid compartiendo';
+  else if (count < 30) hintEl.textContent = 'La galería va tomando forma ✨';
+  else if (count < 60) hintEl.textContent = '¡Menudo álbum estáis creando!';
+  else hintEl.textContent = 'Habéis capturado la boda entera 🥂';
+}
+
 async function loadGallery() {
   const grid = document.getElementById('gallery-grid');
   const empty = document.getElementById('gallery-empty');
@@ -500,9 +543,11 @@ async function loadGallery() {
     if (!photos || photos.length === 0) {
       grid.innerHTML = '';
       empty.style.display = 'block';
+      updatePhotoCounter(0);
       return;
     }
     empty.style.display = 'none';
+    updatePhotoCounter(photos.length);
     grid.innerHTML = '';
     photos.forEach(photo => {
       const item = document.createElement('div');
