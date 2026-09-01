@@ -177,7 +177,12 @@
     display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px;
   }
   .preview-item { position: relative; aspect-ratio: 1; overflow: hidden; }
-  .preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .preview-item img, .preview-item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .preview-badge {
+    position: absolute; bottom: 3px; left: 3px; background: rgba(10,8,5,0.65); color: #fff;
+    font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 6px; pointer-events: none;
+  }
   .preview-remove {
     position: absolute; top: 3px; right: 3px; width: 22px; height: 22px;
     background: rgba(10,8,5,0.65); color: #fff; border: none; border-radius: 50%;
@@ -247,6 +252,14 @@
   }
   .gallery-item img.loaded { opacity: 1; }
   .gallery-item:hover img { transform: scale(1.04); }
+  .gallery-item iframe {
+    width: 100%; aspect-ratio: 9/16; display: block; border: none; background: var(--cream);
+  }
+  .gallery-item .video-tag {
+    position: absolute; top: 6px; right: 6px; background: rgba(10,8,5,0.7); color: #fff;
+    font-family: 'Cinzel', serif; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 7px; pointer-events: none; z-index: 2;
+  }
 
   .gallery-empty {
     text-align: center; padding: 3rem 1rem; font-family: 'Cormorant Garamond', serif;
@@ -314,16 +327,16 @@
       <p class="section-label">Tu aportación</p>
       <h2>Añade tus <em>fotos</em><br>a nuestra galería</h2>
       <p class="body-text" style="margin-top:1rem;">
-        Selecciona una o varias fotos desde tu móvil. Se subirán directamente, sin necesidad de registro.
+        Selecciona una o varias fotos, o algún vídeo corto (máximo 1 minuto), desde tu móvil. Se subirán directamente, sin necesidad de registro.
       </p>
     </div>
 
     <div class="reveal">
       <div class="dropzone" id="dropzone">
         <span class="dropzone-icon">📷</span>
-        <p>Toca aquí para elegir fotos<br>o arrástralas a esta zona</p>
-        <span class="hint">JPG · PNG · HEIC</span>
-        <input type="file" id="file-input" accept="image/*" multiple>
+        <p>Toca aquí para elegir fotos o vídeos<br>o arrástralas a esta zona</p>
+        <span class="hint">JPG · PNG · HEIC · Vídeos de hasta 1 min</span>
+        <input type="file" id="file-input" accept="image/*,video/*" multiple>
       </div>
 
       <div class="form-row">
@@ -370,7 +383,8 @@
 <!-- ══ LIGHTBOX ══ -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
   <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
-  <img id="lightbox-img" src="" alt="Foto ampliada">
+  <img id="lightbox-img" src="" alt="Foto ampliada" style="display:none;">
+  <iframe id="lightbox-video" src="" style="display:none; width:min(90vw,500px); height:80vh; border:none;" allow="autoplay"></iframe>
 </div>
 
 <!-- ══ FOOTER ══ -->
@@ -383,7 +397,7 @@
 // ═══════════════════════════════════════════
 // CONFIGURACIÓN — sustituye por tu URL de Apps Script
 // ═══════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFupnKO0J8Ufnoin8WQLrlQWl35oXUiYXKXXbhcVbVGZmVlbTDWM68Vy30ow5v3nLg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFkUFfZdqkN8yMaXeZbHlFner38h3KzwS2a5xHh90u6y5x4AeOIODaHWjct71GLZZA/exec';
 
 // ── SCROLL REVEAL ──
 const observer = new IntersectionObserver((entries) => {
@@ -399,6 +413,9 @@ const btnUpload  = document.getElementById('btn-upload');
 
 let selectedFiles = [];
 
+const MAX_VIDEO_SECONDS = 60;
+const MAX_VIDEO_MB = 35;
+
 dropzone.addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', (e) => addFiles(e.target.files));
 
@@ -410,11 +427,40 @@ fileInput.addEventListener('change', (e) => addFiles(e.target.files));
 }));
 dropzone.addEventListener('drop', (e) => addFiles(e.dataTransfer.files));
 
-function addFiles(fileList) {
-  Array.from(fileList).forEach(file => {
-    if (!file.type.startsWith('image/')) return;
-    selectedFiles.push(file);
+// Comprueba la duración de un vídeo antes de aceptarlo
+function checkVideoDuration(file) {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(video.src);
+      resolve(video.duration);
+    };
+    video.onerror = () => resolve(null); // si no se puede leer, dejamos que el backend decida
+    video.src = URL.createObjectURL(file);
   });
+}
+
+async function addFiles(fileList) {
+  for (const file of Array.from(fileList)) {
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    if (!isImage && !isVideo) continue;
+
+    if (isVideo) {
+      const sizeMB = file.size / (1024 * 1024);
+      if (sizeMB > MAX_VIDEO_MB) {
+        alert(`El vídeo "${file.name}" pesa demasiado (máx. ${MAX_VIDEO_MB} MB). Prueba con uno más corto o en menor calidad.`);
+        continue;
+      }
+      const duration = await checkVideoDuration(file);
+      if (duration !== null && duration > MAX_VIDEO_SECONDS) {
+        alert(`El vídeo "${file.name}" dura ${Math.round(duration)} segundos. El máximo permitido es de 1 minuto.`);
+        continue;
+      }
+    }
+    selectedFiles.push(file);
+  }
   renderPreviews();
 }
 
@@ -423,17 +469,41 @@ function renderPreviews() {
   selectedFiles.forEach((file, idx) => {
     const item = document.createElement('div');
     item.className = 'preview-item';
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
+    const isVideo = file.type.startsWith('video/');
+
+    if (isVideo) {
+      const video = document.createElement('video');
+      video.src = URL.createObjectURL(file);
+      video.muted = true;
+      item.appendChild(video);
+      const badge = document.createElement('span');
+      badge.className = 'preview-badge';
+      badge.textContent = 'Vídeo';
+      item.appendChild(badge);
+    } else {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      item.appendChild(img);
+    }
+
     const removeBtn = document.createElement('button');
     removeBtn.className = 'preview-remove';
     removeBtn.innerHTML = '&times;';
     removeBtn.onclick = (e) => { e.stopPropagation(); selectedFiles.splice(idx,1); renderPreviews(); };
-    item.appendChild(img);
     item.appendChild(removeBtn);
     previewGrid.appendChild(item);
   });
   btnUpload.disabled = selectedFiles.length === 0;
+}
+
+// Lee un archivo de vídeo directamente como base64 (sin comprimir)
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 // ── COMPRESIÓN DE IMAGEN (para no saturar Drive/red) ──
@@ -476,28 +546,48 @@ async function uploadPhotos() {
 
   const total = selectedFiles.length;
   for (let i = 0; i < total; i++) {
-    status.textContent = `Subiendo foto ${i + 1} de ${total}...`;
+    const file = selectedFiles[i];
+    const isVideo = file.type.startsWith('video/');
+    status.textContent = isVideo
+      ? `Subiendo vídeo ${i + 1} de ${total}...`
+      : `Subiendo foto ${i + 1} de ${total}...`;
     fill.style.width = `${Math.round((i / total) * 100)}%`;
     try {
-      const base64 = await compressImage(selectedFiles[i]);
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          image: base64,
-          mimeType: 'image/jpeg',
-          filename: `${Date.now()}_${i}.jpg`,
-          uploader: name
-        })
-      });
+      if (isVideo) {
+        const base64 = await readFileAsBase64(file);
+        const ext = (file.name.split('.').pop() || 'mp4').toLowerCase();
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            image: base64,
+            mimeType: file.type || 'video/mp4',
+            filename: `${Date.now()}_${i}.${ext}`,
+            uploader: name
+          })
+        });
+      } else {
+        const base64 = await compressImage(file);
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            image: base64,
+            mimeType: 'image/jpeg',
+            filename: `${Date.now()}_${i}.jpg`,
+            uploader: name
+          })
+        });
+      }
     } catch (err) {
-      console.warn('Error subiendo foto:', err);
+      console.warn('Error subiendo archivo:', err);
     }
   }
 
   fill.style.width = '100%';
-  status.textContent = '¡Fotos subidas! Gracias por compartir estos momentos 🥂';
+  status.textContent = '¡Gracias por compartir estos momentos 🥂';
   selectedFiles = [];
   renderPreviews();
 
@@ -552,13 +642,27 @@ async function loadGallery() {
     photos.forEach(photo => {
       const item = document.createElement('div');
       item.className = 'gallery-item';
-      const img = document.createElement('img');
-      img.src = photo.url;
-      img.loading = 'lazy';
-      img.alt = photo.name || 'Foto de la boda';
-      img.onload = () => img.classList.add('loaded');
-      item.appendChild(img);
-      item.onclick = () => openLightbox(photo.url);
+      const isVideo = photo.type === 'video';
+
+      if (isVideo) {
+        const iframe = document.createElement('iframe');
+        iframe.src = photo.url;
+        iframe.loading = 'lazy';
+        iframe.allow = 'autoplay';
+        const tag = document.createElement('span');
+        tag.className = 'video-tag';
+        tag.textContent = '▶ Vídeo';
+        item.appendChild(tag);
+        item.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = photo.url;
+        img.loading = 'lazy';
+        img.alt = photo.name || 'Foto de la boda';
+        img.onload = () => img.classList.add('loaded');
+        item.appendChild(img);
+        item.onclick = () => openLightbox(photo.url, 'image');
+      }
       grid.appendChild(item);
     });
   } catch (err) {
@@ -566,13 +670,25 @@ async function loadGallery() {
   }
 }
 
-function openLightbox(url) {
-  document.getElementById('lightbox-img').src = url;
+function openLightbox(url, type) {
+  const imgEl = document.getElementById('lightbox-img');
+  const videoEl = document.getElementById('lightbox-video');
+  if (type === 'video') {
+    videoEl.src = url;
+    videoEl.style.display = 'block';
+    imgEl.style.display = 'none';
+  } else {
+    imgEl.src = url;
+    imgEl.style.display = 'block';
+    videoEl.style.display = 'none';
+    videoEl.src = '';
+  }
   document.getElementById('lightbox').classList.add('open');
 }
 function closeLightbox(e) {
   if (e.target.id === 'lightbox' || e.target.classList.contains('lightbox-close')) {
     document.getElementById('lightbox').classList.remove('open');
+    document.getElementById('lightbox-video').src = '';
   }
 }
 
@@ -582,3 +698,4 @@ setInterval(loadGallery, 30000);
 </script>
 </body>
 </html>
+
