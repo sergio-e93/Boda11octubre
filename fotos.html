@@ -675,6 +675,46 @@ function updatePhotoCounter(count) {
   else hintEl.textContent = 'Habéis capturado la boda entera 🥂';
 }
 
+const renderedItems = new Map(); // nombre de archivo → elemento DOM ya insertado
+
+function createGalleryItem(photo) {
+  const item = document.createElement('div');
+  item.className = 'gallery-item';
+  const isVideo = photo.type === 'video';
+  const uploaderName = photo.uploader || '';
+
+  if (isVideo) {
+    const video = document.createElement('video');
+    video.src = photo.url;
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+    const tag = document.createElement('span');
+    tag.className = 'video-tag';
+    tag.textContent = '▶ Vídeo';
+    item.appendChild(tag);
+    item.appendChild(video);
+    item.onclick = () => openLightbox(photo.url, 'video', uploaderName);
+  } else {
+    const img = document.createElement('img');
+    img.src = photo.url;
+    img.loading = 'lazy';
+    img.alt = photo.name || 'Foto de la boda';
+    img.onload = () => img.classList.add('loaded');
+    item.appendChild(img);
+    item.onclick = () => openLightbox(photo.url, 'image', uploaderName);
+  }
+
+  if (uploaderName) {
+    const uploaderTag = document.createElement('span');
+    uploaderTag.className = 'uploader-tag';
+    uploaderTag.textContent = uploaderName;
+    item.appendChild(uploaderTag);
+  }
+
+  return item;
+}
+
 async function loadGallery() {
   const grid = document.getElementById('gallery-grid');
   const empty = document.getElementById('gallery-empty');
@@ -685,6 +725,7 @@ async function loadGallery() {
 
     if (!result.items || result.items.length === 0) {
       grid.innerHTML = '';
+      renderedItems.clear();
       empty.style.display = 'block';
       updatePhotoCounter(0);
       return;
@@ -706,44 +747,26 @@ async function loadGallery() {
 
     empty.style.display = 'none';
     updatePhotoCounter(photos.length);
-    grid.innerHTML = '';
-    photos.forEach(photo => {
-      const item = document.createElement('div');
-      item.className = 'gallery-item';
-      const isVideo = photo.type === 'video';
-      const uploaderName = photo.uploader || '';
 
-      if (isVideo) {
-        const video = document.createElement('video');
-        video.src = photo.url;
-        video.preload = 'metadata';
-        video.muted = true;
-        video.playsInline = true;
-        const tag = document.createElement('span');
-        tag.className = 'video-tag';
-        tag.textContent = '▶ Vídeo';
-        item.appendChild(tag);
-        item.appendChild(video);
-        item.onclick = () => openLightbox(photo.url, 'video', uploaderName);
-      } else {
-        const img = document.createElement('img');
-        img.src = photo.url;
-        img.loading = 'lazy';
-        img.alt = photo.name || 'Foto de la boda';
-        img.onload = () => img.classList.add('loaded');
-        item.appendChild(img);
-        item.onclick = () => openLightbox(photo.url, 'image', uploaderName);
+    // Elimina del DOM solo las fotos/vídeos que ya no existen (borrados a mano)
+    const currentNames = new Set(photos.map(p => p.name));
+    for (const [name, el] of renderedItems) {
+      if (!currentNames.has(name)) {
+        el.remove();
+        renderedItems.delete(name);
       }
+    }
 
-      if (uploaderName) {
-        const uploaderTag = document.createElement('span');
-        uploaderTag.className = 'uploader-tag';
-        uploaderTag.textContent = uploaderName;
-        item.appendChild(uploaderTag);
-      }
-
-      grid.appendChild(item);
-    });
+    // Inserta solo lo NUEVO, sin tocar lo que ya está en pantalla
+    // (recorremos de más antiguo a más reciente para que, al insertar cada
+    // uno al principio, el orden final quede con lo más nuevo arriba)
+    for (let i = photos.length - 1; i >= 0; i--) {
+      const photo = photos[i];
+      if (renderedItems.has(photo.name)) continue; // ya está en pantalla, no tocar
+      const item = createGalleryItem(photo);
+      grid.insertBefore(item, grid.firstChild);
+      renderedItems.set(photo.name, item);
+    }
   } catch (err) {
     console.warn('Error cargando la galería:', err);
   }
