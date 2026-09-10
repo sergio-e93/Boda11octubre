@@ -102,12 +102,15 @@
     background-size: cover;
     background-position: center top;
     filter: brightness(0.55) saturate(0.8);
-    transform: scale(1.05);
+    transform: scale(1.05) translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     animation: kenBurns 20s ease-in-out infinite alternate;
   }
   @keyframes kenBurns {
-    from { transform: scale(1.05) translate(0, 0); }
-    to   { transform: scale(1.12) translate(-1%, 1%); }
+    from { transform: scale(1.05) translate(0, 0) translateZ(0); }
+    to   { transform: scale(1.12) translate(-1%, 1%) translateZ(0); }
   }
   .hero-overlay {
     position: absolute;
