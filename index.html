@@ -108,6 +108,14 @@
     -webkit-backface-visibility: hidden;
     animation: kenBurns 20s ease-in-out infinite alternate;
   }
+  @media (min-width: 900px) {
+    .hero-bg {
+      /* En pantallas anchas y bajas (ordenador), "top" recortaba
+         demasiado arriba y solo se veía la frente/pelo. Bajamos el
+         punto de encuadre para que se vea más la zona de los ojos/cara. */
+      background-position: center 22%;
+    }
+  }
   @keyframes kenBurns {
     from { transform: scale(1.05) translate(0, 0) translateZ(0); }
     to   { transform: scale(1.12) translate(-1%, 1%) translateZ(0); }
